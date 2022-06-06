@@ -21,5 +21,13 @@ export async function getInfo() {
  * @returns
  */
 export async function logout(param) {
-  //return await http.post("/api/sysUser/loginOut", param);
+  return await http.post("/api/sysUser/logout", param);
+}
+
+/**
+ * 获取用户菜单信息
+ * @returns {Promise<AxiosResponse<any>>}
+ */
+export async function getMenuList(){
+  return await http.get("/api/sysUser/getMenuList");
 }

@@ -52,18 +52,14 @@
     </el-table>
   </el-main>
 </template>
-<<<<<<< HEAD
 <script>
+//导入department脚本文件
 import DepartementApi from "@/api/departement";
-=======
 
-<script>
->>>>>>> origin/main
 export default {
   name: "department",
   data() {
     return {
-<<<<<<< HEAD
       searchModel:{
         //部门名称
         departmentName:""
@@ -92,16 +88,6 @@ export default {
     }
   }
 }
-//导入department脚本文件
-=======
-      //部门名称
-      departmentName: "",
-      tableData:''
-    }
-  },
-  methods: {}
-}
->>>>>>> origin/main
 </script>
 
 <style scoped>

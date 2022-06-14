@@ -7,5 +7,13 @@ export default {
    */
   async getDepartmentList(params) {
     return await http.get("api/department/list", params);
+  },
+  /**
+   * 获取所属部门列表
+   * @param params
+   * @returns {Promise<AxiosResponse<any>>}
+   */
+  async getParentTreeList() {
+    return await http.get("api/department/parent/list",null)
   }
 }

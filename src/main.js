@@ -22,7 +22,9 @@ import * as filters from './filters' // global filters
 //导入封装信息确认提示框组件脚本
 import myconfirm from "@/utils/myconfirm"
 Vue.prototype.$myconfirm=myconfirm;
-
+//导入清空表单数据脚本
+import resetFrom from "@/utils/resetFrom";
+Vue.prototype.$resetFrom=resetFrom;
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api

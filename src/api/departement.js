@@ -21,7 +21,15 @@ export default {
    * @param params
    * @returns {Promise<AxiosResponse<any>>}
    */
-  async add(params){
+  async addDept(params){
     return await http.post("api/department/add",params)
+  },
+  /**
+   * 修改部门
+   * @param params
+   * @returns {Promise<AxiosResponse<any>>}
+   */
+  async updateDept(params){
+    return await http.put("api/department/update",params)
   }
 }

@@ -36,20 +36,23 @@
       <el-table-column prop="phone" label="部门电话"></el-table-column>
       <el-table-column prop="address" label="部门地址"></el-table-column>
       <el-table-column label="操作">
-        <template v-slot="scope">
-          <el-button
-            size="mini"
-            type="primary"
-            icon="el-icon-edit-outline"
-            @click="handleEdit(scope.row)">编辑
-          </el-button>
-          <el-button
-            size="mini"
-            type="danger"
-            icon="el-icon-delete-solid"
-            @click="handleDelete( scope.row)">删除
-          </el-button>
-        </template>
+          <template v-slot="scope">
+            <el-button
+              size="mini"
+              type="primary"
+              icon="el-icon-edit-outline"
+              @click="handleEdit(scope.row)"
+            v-show="scope.row.id!='1'">编辑
+            </el-button>
+            <el-button
+              size="mini"
+              type="danger"
+              icon="el-icon-delete-solid"
+              @click="handleDelete( scope.row)"
+              v-show="scope.row.id!='1'">删除
+            </el-button>
+          </template>
+
       </el-table-column>
     </el-table>
     <!-- 添加和修改窗口 -->
@@ -217,8 +220,15 @@ export default {
       this.$refs.deptFrom.validate(async (valid) => {
         //如果表单验证通过
         if (valid) {
-          //发送添加请求
-          let res=await DepartmentApi.add(this.dept);
+          let res=null;
+          //判断当前是新增还是修改(依据有无id)
+          if (this.dept.id===""){
+            //发送添加请求
+             res=await DepartmentApi.addDept(this.dept);
+          }else {
+            //发送修改请求
+            res = await DepartmentApi.updateDept(this.dept);
+          }
           //判断是否成功
           if (res.success){
             //提示添加成功
@@ -241,7 +251,6 @@ export default {
       this.parentsDialog.visible = true;
       //查询所属部门列表
       let res = await DepartmentApi.getParentTreeList();
-      console.log(res)
       //判断是否成功
       if (res.success) {
         this.treeList = res.data;
@@ -273,8 +282,16 @@ export default {
     handleNodeClick(data) {
       this.dept.pid = data.id;
       this.dept.parentName = data.departmentName
-      console.log(data);
     },
+    //编辑部门
+    handleEdit(row) {
+      //数据回显
+      this.$objCopy(row,this.dept);
+      //设置窗口的标题
+      this.deptDialog.title="编辑部门";
+      //显示窗口
+      this.deptDialog.visible=true;
+    }
   }
 }
 </script>

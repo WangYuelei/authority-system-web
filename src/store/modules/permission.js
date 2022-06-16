@@ -1,5 +1,5 @@
 //导入路由脚本文件中的属性
-import { constantRoutes} from '@/router'
+import {constantRoutes} from '@/router'
 //导入获取菜单数据的方法
 import {getMenuList} from "@/api/user";
 //导入一级菜单layout

@@ -31,5 +31,21 @@ export default {
    */
   async updateDept(params){
     return await http.put("api/department/update",params)
+  },
+  /**
+   * 检查部门下是否存在子部门
+   * @param params
+   * @returns {Promise<AxiosResponse<any>>}
+   */
+  async checkDepartment(params){
+    return await http.getRestApi("/api/department/check",params)
+  },
+  /**
+   * 删除部门
+   * @param params
+   * @returns {Promise<AxiosResponse<any>>}
+   */
+  async deleteById(params){
+    return await http.delete("/api/department/delete",params)
   }
 }

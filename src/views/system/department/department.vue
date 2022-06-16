@@ -36,22 +36,22 @@
       <el-table-column prop="phone" label="部门电话"></el-table-column>
       <el-table-column prop="address" label="部门地址"></el-table-column>
       <el-table-column label="操作">
-          <template v-slot="scope">
-            <el-button
-              size="mini"
-              type="primary"
-              icon="el-icon-edit-outline"
-              @click="handleEdit(scope.row)"
+        <template v-slot="scope">
+          <el-button
+            size="mini"
+            type="primary"
+            icon="el-icon-edit-outline"
+            @click="handleEdit(scope.row)"
             v-show="scope.row.id!='1'">编辑
-            </el-button>
-            <el-button
-              size="mini"
-              type="danger"
-              icon="el-icon-delete-solid"
-              @click="handleDelete( scope.row)"
-              v-show="scope.row.id!='1'">删除
-            </el-button>
-          </template>
+          </el-button>
+          <el-button
+            size="mini"
+            type="danger"
+            icon="el-icon-delete-solid"
+            @click="handleDelete( scope.row)"
+            v-show="scope.row.id!='1'">删除
+          </el-button>
+        </template>
 
       </el-table-column>
     </el-table>
@@ -116,7 +116,7 @@
 </template>
 <script>
 //导入department脚本文件
-import DepartmentApi from "@/api/departement";
+import departmentApi from "@/api/departement";
 //导入SystemDialog组件
 import SystemDialog from "@/components/System/SystemDialog.vue";
 
@@ -189,7 +189,7 @@ export default {
      */
     async search() {
       //发送查询请求
-      let res = await DepartmentApi.getDepartmentList(this.searchModel);
+      let res = await departmentApi.getDepartmentList(this.searchModel);
       //判断是否成功
       if (res.success) {
         this.tableData = res.data;
@@ -200,7 +200,7 @@ export default {
      */
     openAddWindow() {
       //清空表单数据
-      this.$resetFrom("deptFrom",this.dept)
+      this.$resetFrom("deptFrom", this.dept)
       //设置窗口的属性
       this.deptDialog.title = "新增部门";
       this.deptDialog.visible = true;
@@ -215,29 +215,29 @@ export default {
     /**
      * 窗口确认事件
      */
-     onConfirm() {
+    onConfirm() {
       //进行表单验证
       this.$refs.deptFrom.validate(async (valid) => {
         //如果表单验证通过
         if (valid) {
-          let res=null;
+          let res = null;
           //判断当前是新增还是修改(依据有无id)
-          if (this.dept.id===""){
+          if (this.dept.id === "") {
             //发送添加请求
-             res=await DepartmentApi.addDept(this.dept);
-          }else {
+            res = await departmentApi.addDept(this.dept);
+          } else {
             //发送修改请求
-            res = await DepartmentApi.updateDept(this.dept);
+            res = await departmentApi.updateDept(this.dept);
           }
           //判断是否成功
-          if (res.success){
+          if (res.success) {
             //提示添加成功
             this.$message.success(res.message)
             //刷新数据
             this.search();
             //关闭窗口
-            this.deptDialog.visible=false;
-          }else {
+            this.deptDialog.visible = false;
+          } else {
             this.$message.error(res.message)
           }
           //关闭窗口
@@ -250,7 +250,7 @@ export default {
       //设置窗口的属性
       this.parentsDialog.visible = true;
       //查询所属部门列表
-      let res = await DepartmentApi.getParentTreeList();
+      let res = await departmentApi.getParentTreeList();
       //判断是否成功
       if (res.success) {
         this.treeList = res.data;
@@ -286,11 +286,38 @@ export default {
     //编辑部门
     handleEdit(row) {
       //数据回显
-      this.$objCopy(row,this.dept);
+      this.$objCopy(row, this.dept);
       //设置窗口的标题
-      this.deptDialog.title="编辑部门";
+      this.deptDialog.title = "编辑部门";
       //显示窗口
-      this.deptDialog.visible=true;
+      this.deptDialog.visible = true;
+    },
+    //删除部门
+    async handleDelete(row) {
+      //查询部门下是否存在子部门或用户
+      let res=await departmentApi.checkDepartment({id:row.id})
+      //判断是否可以删除
+      if (!res.success) {
+        //提示不能删除
+        this.$message.warning(res.message)
+      }else {
+        //提示是否删除
+        let confirm= await this.$myconfirm("确定要删除数据吗?")
+        if (confirm){
+          //发送确认请求
+          let res= await departmentApi.deleteById({id:row.id})
+          //判断是否成功
+          if (res.success) {
+            //成功提示
+            this.$message.success(res.message)
+            //刷新列表
+            await this.search();
+          }else {
+            //失败提示
+            this.$message.error(res.message)
+          }
+        }
+      }
     }
   }
 }

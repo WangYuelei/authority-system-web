@@ -212,8 +212,28 @@ export default {
     /**
      * 窗口确认事件
      */
-    onConfirm() {
-      this.deptDialog.visible = false
+     onConfirm() {
+      //进行表单验证
+      this.$refs.deptFrom.validate(async (valid) => {
+        //如果表单验证通过
+        if (valid) {
+          //发送添加请求
+          let res=await DepartmentApi.add(this.dept);
+          //判断是否成功
+          if (res.success){
+            //提示添加成功
+            this.$message.success(res.message)
+            //刷新数据
+            this.search();
+            //关闭窗口
+            this.deptDialog.visible=false;
+          }else {
+            this.$message.error(res.message)
+          }
+          //关闭窗口
+          this.deptDialog.visible = false;
+        }
+      })
     },
     //打开选择所属部门窗口
     async openSelectDeptWindow() {
@@ -251,7 +271,7 @@ export default {
     },
     //书节点点击事件
     handleNodeClick(data) {
-      this.dept.id = data.id;
+      this.dept.pid = data.id;
       this.dept.parentName = data.departmentName
       console.log(data);
     },

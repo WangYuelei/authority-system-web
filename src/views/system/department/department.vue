@@ -200,7 +200,7 @@ export default {
      */
     openAddWindow() {
       //清空表单数据
-      this.$resetFrom("deptFrom", this.dept)
+      this.$resetForm("deptFrom", this.dept)
       //设置窗口的属性
       this.deptDialog.title = "新增部门";
       this.deptDialog.visible = true;

@@ -1,8 +1,8 @@
 //重置表单和表单数据
-export default function resetForm(fromName,obj){
+export default function resetForm(formName,obj){
 //清空表单
-  if(this.$refs[fromName]){
-    this.$refs[fromName].resetFields();
+  if(this.$refs[formName]){
+    this.$refs[formName].resetFields();
   }
 //清空数据域
   Object.keys(obj).forEach(key =>{

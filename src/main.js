@@ -23,8 +23,8 @@ import * as filters from './filters' // global filters
 import myconfirm from "@/utils/myconfirm"
 Vue.prototype.$myconfirm=myconfirm;
 //导入清空表单数据脚本
-import resetFrom from "@/utils/resetFrom";
-Vue.prototype.$resetFrom=resetFrom;
+import resetForm from "@/utils/resetForm";
+Vue.prototype.$resetForm=resetForm;
 //导入表单数据回显脚本
 import objCopy from "@/utils/objectCopy";
 Vue.prototype.$objCopy=objCopy;

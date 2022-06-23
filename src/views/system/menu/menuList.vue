@@ -84,32 +84,7 @@
             <el-input v-model="menu.code"></el-input>
           </el-form-item>
           <el-form-item label="菜单图标" size="small">
-            <div class="chooseIcons">
-              <el-popover placement="bottom" width="450" trigger="click">
-                <span
-                  slot="reference"
-                  style="
-                  display: inline-block;
-                  width: 200px;
-                  height: 33px;
-                  line-height: 33px;
-                  "
-                >
-                  <i :class="userChooseIcon"></i>
-                  {{ userChooseIcon }}
-                </span>
-                <div class="iconList">
-                  <i
-                    v-for="item in iconList"
-                    :key="item"
-                    :class="item"
-                    @click="setIcon(item)"
-                    style="font-size: 20px"
-                  >
-                  </i>
-                </div>
-              </el-popover>
-            </div>
+            <my-icon @selecticon="setIcon" ref="child"></my-icon>
           </el-form-item>
           <el-form-item label="菜单序号" size="small">
             <el-input v-model="menu.orderNum"></el-input>
@@ -153,16 +128,12 @@
 import menuApi from "@/api/menu";
 //导入对话框组件
 import SystemDialog from "@/components/System/SystemDialog";
-//引入自定义的icon图片库
-import {elementIcons} from "@/utils/icons";
 
+//导入自定义图标组件
+import MyIcon from '@/components/System/MyIcon.vue'
 export default {
   name: "menuList",
-  components: {SystemDialog},
-  comments: {
-    //注册组件
-    SystemDialog
-  },
+  components: {SystemDialog,MyIcon},
   data() {
     return {
       menuList: [],//数据列表
@@ -241,7 +212,6 @@ export default {
      * @param icon
      */
     setIcon(icon) {
-      this.userChooseIcon = icon; //将i的样式设为选中的样式el-icon-xxx
       this.menu.icon = icon;
     },
     /**
@@ -276,12 +246,13 @@ export default {
     openAddWindow() {
       //清空表单数据
       this.$resetForm("menuFrom", this.menu)
-      //清空图标选择器
-      this.userChooseIcon="";
       //设置窗口标题
       this.menuDialog.title = "新增菜单";
       //显示窗口
       this.menuDialog.visible = true;
+      this.$nextTick(() => {
+        this.$refs["child"].userChooseIcon = "";//清空菜单图标
+      })
     }
     ,
     /**

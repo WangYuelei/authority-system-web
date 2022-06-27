@@ -34,13 +34,13 @@
             size="mini"
             type="primary"
             icon="el-icon-edit-outline"
-            @click="handleEdit(scope.row)">编辑
+            @click="editMenu(scope.row)">编辑
           </el-button>
           <el-button
             size="mini"
             type="danger"
             icon="el-icon-delete-solid"
-            @click="handleDelete( scope.row)">删除
+            @click="deleteMenu( scope.row)">删除
           </el-button>
         </template>
       </el-table-column>
@@ -268,11 +268,29 @@ export default {
      */
     onConfirm() {
       //表单验证
-      this.$refs.menuForm.validate((valid) => {
+      this.$refs.menuForm.validate(async (valid) => {
         //验证通过
         if (valid) {
-          //关闭窗口
-          this.menuDialog.visible = false
+          let res = null;
+          //判断菜单id是否为空
+          if (this.menu.id === "") {
+            //发送添加请求
+            res = await menuApi.addMenu(this.menu);
+          } else {
+            //发送修改请求
+            res = await menuApi.updateMenu(this.menu)
+          }
+          //判断是否成功
+          if (res.success){
+            this.$message.success(res.message);
+            //刷新
+            //await this.search();
+            window.location.reload();
+            //关闭窗口
+            this.menuDialog.visible=false;
+          }else {
+            this.$message.error(res.message)
+          }
         }
       })
     },
@@ -302,6 +320,51 @@ export default {
       this.menu.parentId = data.id;
       //所属父级菜单名称
       this.menu.parentName = data.label;
+    },
+    /**
+     * 编辑菜单
+     * @param row
+     */
+    editMenu(row){
+      //把当前要编辑的数据复制到数据域.给表单回显
+      this.$objCopy(row, this.menu);
+      //设置弹框属性
+      this.menuDialog.title="编辑菜单"
+      this.menuDialog.visible=true;
+      this.$nextTick(()=>{
+        //菜单图标回显
+        this.$refs["child"].userChooseIcon=row.icon
+      })
+    },
+    /**
+     * 删除菜单
+     */
+    async deleteMenu(row){
+      //判断是否有子菜单
+      let result=await menuApi.checkPermission({id:row.id});
+      //判断是否可以删除
+      if (!result.success){
+        //提示不能删除
+        this.$message.warning(result.message)
+      }else {
+        //确认是否删除
+        let confirm=await this.$myconfirm("确定要删除该数据吗")
+        if (confirm){
+          //发送删除请求
+          let res=await menuApi.deleteById({id:row.id})
+          console.log(res)
+          //判断是否成功
+          if (res.success){
+            //成功提示
+            this.$message.success(res.message)
+            //刷新
+            this.search();
+          }else {
+            //失败提示
+            this.$message.error(res.message)
+          }
+        }
+      }
     }
   }
 }
